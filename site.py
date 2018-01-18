@@ -23,7 +23,7 @@ def escape(input):
     return sanit
 
 def downloads_ls():
-    repo_dir = os.path.normpath(os.path.expanduser('~'), 'Desktop/Web_dev/files/repo'))
+    repo_dir = os.path.normpath(os.path.join(os.path.expanduser('~'), 'Desktop/Web_dev/files/repo'))
     os.chdir(repo_dir)
     lsa = os.listdir(os.getcwd())
     return lsa
