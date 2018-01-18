@@ -28,7 +28,8 @@ def downloads_ls():
 
 def filedownload(fnme):
     home = os.path.expanduser('~')
-    os.chdir(home)
+    downpath = home + '\Downloads'
+    os.chdir(downpath)
     src = 'file:///Users/Isaac/Desktop/Web_dev/files/repo/' + str(fnme)
     wget.download(src)
 
