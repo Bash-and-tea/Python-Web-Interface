@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import cgi
 import os
 import wget
