@@ -4,7 +4,8 @@ import os
 import wget
 
 def savefile(fname, messagecontent):
-    os.chdir('C:\\Users\Isaac\Desktop\Web_dev\\files\\subs')
+    sub_dir = os.path.expanduser('~' + '/Desktop/Web_dev/files/subs')
+    os.chdir(sub_dir)
     with open(fname, 'wb') as ufl:
         ufl.write(messagecontent)
         ufl.close()
@@ -22,7 +23,9 @@ def escape(input):
     return sanit
 
 def downloads_ls():
-    os.chdir('C:\\Users\Isaac\Desktop\Web_dev\\files\\repo')
+    repo_dir
+    repo_dir = os.path.expanduser('~' + '/Desktop/Web_dev/files/repo')
+    os.chdir(repo_dir)
     lsa = os.listdir(os.getcwd())
     return lsa
 
