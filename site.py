@@ -1,11 +1,10 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import cgi
 import os
-import wget
+import shutil
 
 def savefile(fname, messagecontent):
-    sub_dir = os.path.normpath(os.path.join(os.path.expanduser('~'), 'Desktop/Web_dev/files/subs'))
-    os.chdir(sub_dir)
+    os.chdir('C:\\Users\Isaac\Desktop\Web_dev\\files\\subs')
     with open(fname, 'wb') as ufl:
         ufl.write(messagecontent)
         ufl.close()
@@ -23,17 +22,19 @@ def escape(input):
     return sanit
 
 def downloads_ls():
-    repo_dir = os.path.normpath(os.path.join(os.path.expanduser('~'), 'Desktop/Web_dev/files/repo'))
-    os.chdir(repo_dir)
+    os.chdir('C:\\Users\Isaac\Desktop\Web_dev\\files\\repo')
     lsa = os.listdir(os.getcwd())
     return lsa
 
-def filedownload(fnme):
-    home = os.path.expanduser('~')
-    downpath = home + '\Downloads'
-    os.chdir(downpath)
-    src = 'file:///Users/Isaac/Desktop/Web_dev/files/repo/' + str(fnme)
-    wget.download(src)
+def fetch(toFetch):
+    global fetchpath
+    fetchpath = str(toFetch)
+
+# def filedownload(fnme):
+#     home = os.path.expanduser('~')
+#     os.chdir(home)
+#     src = 'file:///Users/Isaac/Desktop/Web_dev/files/repo/' + str(fnme)
+#     wget.download(src)
 
 class WebServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -67,6 +68,18 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output += "</body></html>"
             self.wfile.write(output.encode(encoding='utf_8'))
             print output
+            return
+        elif self.path.endswith("/file-get"):
+            os.chdir('C:\Users\Isaac\Desktop\Web_dev\\files\\repo')
+            with open(fetchpath, 'rb') as f:
+                self.send_response(200)
+                self.send_header("Content-Type", 'application/octet-stream')
+                self.send_header("Content-Disposition", 'attachment; filename="{}"'.format(os.path.basename(fetchpath)))
+                fs = os.fstat(f.fileno())
+                self.send_header("Content-Length", str(fs.st_size))
+                self.end_headers()
+                shutil.copyfileobj(f, self.wfile)
+                f.close()
             return
         elif self.path.endswith("/chatroom"):
             print "Chatting"
@@ -115,29 +128,36 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 fields = cgi.parse_multipart(self.rfile, pdict)
                 fname = fields.get('filename')
                 print fname
-                filedownload(fname[0])
-            elif (ctype == 'multipart/form-data') and (self.path.endswith('/chatroom')):
-                filework = True
-                if ctype == 'multipart/form-data':
-                    fields = cgi.parse_multipart(self.rfile, pdict)
-                    messagecontent = fields.get('message')
+                fetch(fname[0])
                 output = ""
                 output += "<html><body>"
-                output += " <h2> Okay, how about this: </h2>"
-                echo = escape(messagecontent[0])
-                output += "<h1> %s </h1>" % echo
-                output += '''<form method='POST' enctype='multipart/form-data' action='/chatroom'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
-                output += "</body></html>"
-                self.wfile.write(output.encode(encoding="utf_8"))
-            if (not filework):
-                print "File return"
-                output = ""
-                output += "<html><body>"
-                output += " <h2> What now?: </h2>"
-                output += "<a href=/> Home </a>"
+                # output += " <h2> What now?: </h2>"
+                output += "<a href=/file-get> Home </a>"
                 output += "</body></html>"
                 self.wfile.write(output.encode(encoding="utf_8"))
                 print output
+            # elif (ctype == 'multipart/form-data') and (self.path.endswith('/chatroom')):
+            #     filework = True
+            #     if ctype == 'multipart/form-data':
+            #         fields = cgi.parse_multipart(self.rfile, pdict)
+            #         messagecontent = fields.get('message')
+            #     output = ""
+            #     output += "<html><body>"
+            #     output += " <h2> Okay, how about this: </h2>"
+            #     echo = escape(messagecontent[0])
+            #     output += "<h1> %s </h1>" % echo
+            #     output += '''<form method='POST' enctype='multipart/form-data' action='/chatroom'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
+            #     output += "</body></html>"
+            #     self.wfile.write(output.encode(encoding="utf_8"))
+            # if (not filework):
+            #     print "File return"
+            #     output = ""
+            #     output += "<html><body>"
+            #     output += " <h2> What now?: </h2>"
+            #     output += "<a href=/> Home </a>"
+            #     output += "</body></html>"
+            #     self.wfile.write(output.encode(encoding="utf_8"))
+            #     print output
         except:
             pass
 
