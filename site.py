@@ -30,12 +30,6 @@ def fetch(toFetch):
     global fetchpath
     fetchpath = str(toFetch)
 
-# def filedownload(fnme):
-#     home = os.path.expanduser('~')
-#     os.chdir(home)
-#     src = 'file:///Users/Isaac/Desktop/Web_dev/files/repo/' + str(fnme)
-#     wget.download(src)
-
 class WebServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.endswith("/upload"):
@@ -81,18 +75,6 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 shutil.copyfileobj(f, self.wfile)
                 f.close()
             return
-        elif self.path.endswith("/chatroom"):
-            print "Chatting"
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            output = ""
-            output += "<html><body>"
-            output += "<h2> How's it going?</h2>"
-            output += "<form method = 'POST' enctype='multipart/form-data' action='/chatroom'> What would you like me to say?</h2><input name = 'message' type = 'text'> <input type = 'submit' value = 'Submit'></form>"
-            output += "</body></html>"
-            self.wfile.write(output.encode(encoding='utf_8'))
-            return
         else:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -102,7 +84,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output += "<p>Welcome to this convenient site I made to upload debate files to!</p>"
             output += "<a href=upload>" + 'Submit a file to be uploaded' + "</a>"
             output += "<p><a href=download>" + 'Access files others have submitted' + "</a></p>"
-            output += "<p><a href=chatroom> Join the chatroom </a></p>"
+            output += '''<a href="http://counter5nolixj34.onion/visits.php?id=a17336fc5c02f2444f699f53e6acc3cf"><img style="height:24px;width:auto;" src="http://counter5nolixj34.onion/counter.gif?id=a17336fc5c02f2444f699f53e6acc3cf&bg=000000&fg=FFFFFF&tr=0&unique=0&mode=0"></a>'''
             output += "</body></html>"
             self.wfile.write(output.encode(encoding='utf_8'))
             print output
@@ -116,7 +98,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             ctype, pdict = cgi.parse_header(
                 self.headers.getheader('content-type'))
             if (ctype == 'multipart/form-data') and (self.path.endswith('/upload')):
-                filework = False
+                filework = True
                 fields = cgi.parse_multipart(self.rfile, pdict)
                 fname = fields.get('filename')
                 print fname
@@ -124,40 +106,27 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 if ('.inf' not in fname[0]) and ('.exe' not in fname[0]):
                     savefile(fname[0], messagecontent[0])
             elif (ctype == 'multipart/form-data') and (self.path.endswith('/download')):
-                filework = False
+                filework = True
                 fields = cgi.parse_multipart(self.rfile, pdict)
                 fname = fields.get('filename')
                 print fname
                 fetch(fname[0])
                 output = ""
-                output += "<html><body>"
-                # output += " <h2> What now?: </h2>"
-                output += "<a href=/file-get> Home </a>"
+                output += "<html><head>"
+                output += '<meta http-equiv="refresh" content="0; url=/file-get" />'
+                output += "</head><body>"
                 output += "</body></html>"
                 self.wfile.write(output.encode(encoding="utf_8"))
                 print output
-            # elif (ctype == 'multipart/form-data') and (self.path.endswith('/chatroom')):
-            #     filework = True
-            #     if ctype == 'multipart/form-data':
-            #         fields = cgi.parse_multipart(self.rfile, pdict)
-            #         messagecontent = fields.get('message')
-            #     output = ""
-            #     output += "<html><body>"
-            #     output += " <h2> Okay, how about this: </h2>"
-            #     echo = escape(messagecontent[0])
-            #     output += "<h1> %s </h1>" % echo
-            #     output += '''<form method='POST' enctype='multipart/form-data' action='/chatroom'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
-            #     output += "</body></html>"
-            #     self.wfile.write(output.encode(encoding="utf_8"))
-            # if (not filework):
-            #     print "File return"
-            #     output = ""
-            #     output += "<html><body>"
-            #     output += " <h2> What now?: </h2>"
-            #     output += "<a href=/> Home </a>"
-            #     output += "</body></html>"
-            #     self.wfile.write(output.encode(encoding="utf_8"))
-            #     print output
+            if (filework):
+                print "File return"
+                output = ""
+                output += "<html><head>"
+                output += '<meta http-equiv="refresh" content="0; url=/" />'
+                output += "</head><body>"
+                output += "</body></html>"
+                self.wfile.write(output.encode(encoding="utf_8"))
+                print output
         except:
             pass
 
