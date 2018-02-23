@@ -4,7 +4,7 @@ import os
 import shutil
 
 def savefile(fname, messagecontent):
-    os.chdir('C:\\Users\Isaac\Desktop\Web_dev\\files\\subs')
+    os.chdir('C:\\Users\\Isaac\\Desktop\\Web_dev\\files\\subs')
     with open(fname, 'wb') as ufl:
         ufl.write(messagecontent)
         ufl.close()
@@ -22,7 +22,7 @@ def escape(input):
     return sanit
 
 def downloads_ls():
-    os.chdir('C:\\Users\Isaac\Desktop\Web_dev\\files\\repo')
+    os.chdir('C:\\Users\\Isaac\\Desktop\\Web_dev\\files\\repo')
     lsa = os.listdir(os.getcwd())
     return lsa
 
@@ -41,10 +41,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output += "<body>"
             output += "<h2> How's it going?</h2>"
             output += '''<form method = 'POST' enctype='multipart/form-data' action='/upload'> What file would you like to upload? </h2>
-            <br><input name = 'filename' type = 'text'><br> <input name = 'userfile' type = 'file'><br> <input type = 'submit' value = 'Upload'></form>'''
+            <br><input name = 'filename' type = 'text' maxlength="40"><br> <input name = 'userfile' type = 'file'><br> <input type = 'submit' value = 'Upload'></form>'''
             output += "</body></html>"
             self.wfile.write(output.encode(encoding='utf_8'))
-            print output
             return
         elif self.path.endswith("/download"):
             self.send_response(200)
@@ -61,10 +60,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output += "<form method = 'POST' enctype='multipart/form-data' action='/download'> What file would you like to download? </h2><input name = 'filename' type = 'text'> <input type = 'submit' value = 'Download'></form>"
             output += "</body></html>"
             self.wfile.write(output.encode(encoding='utf_8'))
-            print output
             return
         elif self.path.endswith("/file-get"):
-            os.chdir('C:\Users\Isaac\Desktop\Web_dev\\files\\repo')
+            os.chdir('C:\\Users\\Isaac\\Desktop\\Web_dev\\files\\repo')
             with open(fetchpath, 'rb') as f:
                 self.send_response(200)
                 self.send_header("Content-Type", 'application/octet-stream')
@@ -74,6 +72,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 shutil.copyfileobj(f, self.wfile)
                 f.close()
+            print "Download Successful"
             return
         else:
             self.send_response(200)
@@ -83,11 +82,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
             output += "<html><title>Files for debate</title><body>"
             output += "<p>Welcome to this convenient site I made to upload debate files to!</p>"
             output += "<a href=upload>" + 'Submit a file to be uploaded' + "</a>"
-            output += "<p><a href=download>" + 'Access files others have submitted' + "</a></p>"
+            output += "<p><a href=download>" + 'Access files others have submitted' + "</a></p><br>"
+            output += "Number of visitors: <br>"
             output += '''<a href="http://counter5nolixj34.onion/visits.php?id=a17336fc5c02f2444f699f53e6acc3cf"><img style="height:24px;width:auto;" src="http://counter5nolixj34.onion/counter.gif?id=a17336fc5c02f2444f699f53e6acc3cf&bg=000000&fg=FFFFFF&tr=0&unique=0&mode=0"></a>'''
             output += "</body></html>"
             self.wfile.write(output.encode(encoding='utf_8'))
-            print output
+            print "Home"
             return
 
     def do_POST(self):
@@ -117,16 +117,13 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 output += "</head><body>"
                 output += "</body></html>"
                 self.wfile.write(output.encode(encoding="utf_8"))
-                print output
             if (filework):
-                print "File return"
+                print "File + return"
                 output = ""
-                output += "<html><head>"
-                output += '<meta http-equiv="refresh" content="0; url=/" />'
-                output += "</head><body>"
+                output += "<html>"
+                output += "<body><a href='/'> Home </a></p>"
                 output += "</body></html>"
                 self.wfile.write(output.encode(encoding="utf_8"))
-                print output
         except:
             pass
 
