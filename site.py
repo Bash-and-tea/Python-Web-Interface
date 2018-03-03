@@ -4,10 +4,11 @@ import os
 import shutil
 
 def savefile(fname, messagecontent):
-    os.chdir('C:\\Users\\Isaac\\Desktop\\Web_dev\\files\\subs')
+    os.chdir('files\\subs')
     with open(fname, 'wb') as ufl:
         ufl.write(messagecontent)
         ufl.close()
+    os.chdir('..\\..')
     print "File saved!"
 
 def escape(input):
@@ -22,8 +23,9 @@ def escape(input):
     return sanit
 
 def downloads_ls():
-    os.chdir('C:\\Users\\Isaac\\Desktop\\Web_dev\\files\\repo')
+    os.chdir('files\\repo')
     lsa = os.listdir(os.getcwd())
+    os.chdir('..\\..')
     return lsa
 
 def fetch(toFetch):
@@ -62,7 +64,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.wfile.write(output.encode(encoding='utf_8'))
             return
         elif self.path.endswith("/file-get"):
-            os.chdir('C:\\Users\\Isaac\\Desktop\\Web_dev\\files\\repo')
+            os.chdir('files\\repo')
             with open(fetchpath, 'rb') as f:
                 self.send_response(200)
                 self.send_header("Content-Type", 'application/octet-stream')
@@ -73,6 +75,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 shutil.copyfileobj(f, self.wfile)
                 f.close()
             print "Download Successful"
+            os.chdir('..\\..')
             return
         else:
             self.send_response(200)
